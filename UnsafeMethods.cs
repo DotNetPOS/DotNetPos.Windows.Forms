@@ -41,15 +41,67 @@ namespace DotNetPos.Windows.Forms
         /// </summary>
         internal const int GID_PRESSANDTAP = 7;
 
-        internal const int WM_GESTURE = 0x119;
-        internal const uint WM_GESTURENOTIFY = 0x11a;
+        // Touch event window message constants [winuser.h]
+        internal const int WM_GESTURENOTIFY = 0x011A;
+        internal const int WM_GESTURE = 0x0119;
 
+        // Gesture flags - GESTUREINFO.dwFlags
+        /// <summary>
+        /// A gesture is starting.
+        /// </summary>
+        internal const int GF_BEGIN = 0x00000001;
+        /// <summary>
+        /// A gesture has triggered inertia.
+        /// </summary>
+        internal const int GF_INERTIA = 0x00000002;
+        /// <summary>
+        /// A gesture has finished.
+        /// </summary>
+        internal const int GF_END = 0x00000004;
+
+        /// <summary>
+        /// Gets and sets the configuration for enabling gesture messages and the type of this configuration.
+        /// </summary>
+        /// <remarks>
+        /// It is impossible to disable two-finger panning and keep single finger panning. You must set the want bits for GC_PAN before you can set them for GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY or GC_PAN_WITH_SINGLE_FINGER_VERTICALLY.
+        /// 
+        /// An inertia vector is included in the GID_PAN message with the GF_END flag if inertia was disabled by a call to SetGestureConfig.
+        /// 
+        /// When you pass this structure, the dwID member contains information for a set of gestures. This determines what the other flags will mean. If you set flags for pan messages, they will be different from those flags that are set for rotation messages.
+        /// </remarks>
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct GESTURECONFIG
+        {
+            /// <summary>
+            /// The identifier for the type of configuration that will have messages enabled or disabled.
+            /// </summary>
+            public int dwID;
+            /// <summary>
+            /// The messages to enable.
+            /// </summary>
+            public int dwWant;
+            /// <summary>
+            /// The messages to disable.
+            /// </summary>
+            public int dwBlock;
+        }
+
+        /// <summary>
+        /// The <b>POINTS</b> structure defines the coordinates of a point.
+        /// </summary>
         [StructLayout(LayoutKind.Sequential)]
         internal struct POINTS
         {
+            /// <summary>
+            /// The x-coordinate of the point.
+            /// </summary>
             public short x;
+            /// <summary>
+            /// The y-coordinate of the point.
+            /// </summary>
             public short y;
         }
+
         /// <summary>
         /// Stores information about a gesture.
         /// </summary>
@@ -147,6 +199,26 @@ namespace DotNetPos.Windows.Forms
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool CloseGestureInfoHandle(IntPtr hGestureInfo);
+
+        /// <summary>
+        /// Configures the messages that are sent from a window for Windows Touch gestures.
+        /// </summary>
+        /// <param name="hWnd">A handle to the window to set the gesture configuration on.</param>
+        /// <param name="dwReserved">This value is reserved and must be set to 0.</param>
+        /// <param name="cIDs">A count of the gesture configuration structures that are being passed.</param>
+        /// <param name="pGestureConfig">An array of gesture configuration structures that specify the gesture configuration.</param>
+        /// <param name="cbSize">The size of the gesture configuration (<see cref="GESTURECONFIG">GESTURECONFIG</see>) structure.</param>
+        /// <returns>
+        /// If the function succeeds, the return value is nonzero.
+        /// 
+        /// If the function fails, the return value is zero.To get extended error information, use the GetLastError function.
+        /// </returns>
+        /// <remarks>
+        /// If you don't expect to change the gesture configuration, call SetGestureConfig at window creation time. If you want to dynamically change the gesture configuration, call SetGestureConfig in response to WM_GESTURENOTIFY messages.
+        /// </remarks>
+        [DllImport("user32")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool SetGestureConfig(IntPtr hWnd, int dwReserved, int cIDs, ref GESTURECONFIG pGestureConfig, int cbSize);
 
         #endregion
 
