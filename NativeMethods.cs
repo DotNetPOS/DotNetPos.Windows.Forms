@@ -8,8 +8,54 @@ using System.Threading.Tasks;
 namespace DotNetPos.Windows.Forms
 {
     [System.Security.SuppressUnmanagedCodeSecurityAttribute()]
-    internal static class UnsafeMethods
+    internal static class NativeMethods
     {
+        #region Genric
+
+        /// <summary>
+        /// The POINT structure defines the x- and y- coordinates of a point.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public class POINT
+        {
+            /// <summary>
+            /// The x-coordinate of the point.
+            /// </summary>
+            public int x;
+            /// <summary>
+            /// The y-coordinate of the point.
+            /// </summary>
+            public int y;
+
+            public POINT()
+            {
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="x">The x-coordinate of the point.</param>
+            /// <param name="y">The y-coordinate of the point.</param>
+            public POINT(int x, int y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+
+        }
+
+        /// <summary>
+        /// The <b>ScreenToClient</b> function converts the screen coordinates of a specified point on the screen to client-area coordinates.
+        /// </summary>
+        /// <param name="hWnd">A handle to the window whose client area will be used for the conversion.</param>
+        /// <param name="lpPoint">A pointer to a POINT structure that specifies the screen coordinates to be converted.</param>
+        /// <returns></returns>
+        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool ScreenToClient(IntPtr hWnd, [In, Out] ref POINT lpPoint);
+
+        #endregion
+
         #region Gesture
 
         /// <summary>

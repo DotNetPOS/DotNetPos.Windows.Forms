@@ -48,7 +48,7 @@
     <Compile Include="GestureEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TouchEventArgs.cs" />
-    <Compile Include="UnsafeMethods.cs" />
+    <Compile Include="NativeMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

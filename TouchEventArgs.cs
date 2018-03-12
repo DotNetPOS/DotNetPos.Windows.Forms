@@ -95,7 +95,7 @@ namespace DotNetPos.Windows.Forms
         
         public bool IsPrimaryContact
         {
-            get { return (this._flags & UnsafeMethods.TOUCHEVENTF_PRIMARY) != 0; }
+            get { return (this._flags & NativeMethods.TOUCHEVENTF_PRIMARY) != 0; }
         }
 
         // Constructor
@@ -103,7 +103,7 @@ namespace DotNetPos.Windows.Forms
         {
         }
 
-        internal TouchEventArgs(UnsafeMethods.TOUCHINPUT touchInput)
+        internal TouchEventArgs(NativeMethods.TOUCHINPUT touchInput)
         {
             // TOUCHINFO point coordinates and contact size is in 1/100 of a pixel; convert it to pixels.
             // Also convert screen to client coordinates.

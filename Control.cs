@@ -42,18 +42,18 @@ namespace DotNetPos.Windows.Forms
             // GetTouchInputInfo needs to be
             // passed the size of the structure it will be filling.
             // We get the size upfront so it can be used later.
-            int touchInputSize = Marshal.SizeOf(new UnsafeMethods.TOUCHINPUT());
+            int touchInputSize = Marshal.SizeOf(new NativeMethods.TOUCHINPUT());
 
             // More than one touchinput may be associated with a touch message,
             // so an array is needed to get all event information.
             int inputCount = LoWord(m.WParam.ToInt32()); // Number of touch inputs, actual per-contact messages
 
-            UnsafeMethods.TOUCHINPUT[] inputs; // Array of TOUCHINPUT structures
-            inputs = new UnsafeMethods.TOUCHINPUT[inputCount]; // Allocate the storage for the parameters of the per-contact messages
+            NativeMethods.TOUCHINPUT[] inputs; // Array of TOUCHINPUT structures
+            inputs = new NativeMethods.TOUCHINPUT[inputCount]; // Allocate the storage for the parameters of the per-contact messages
 
             // Unpack message parameters into the array of TOUCHINPUT structures, each
             // representing a message for one single contact.
-            if (!UnsafeMethods.GetTouchInputInfo(m.LParam, inputCount, inputs, touchInputSize))
+            if (!NativeMethods.GetTouchInputInfo(m.LParam, inputCount, inputs, touchInputSize))
             {
                 // Get touch info failed.
                 return false;
@@ -64,19 +64,19 @@ namespace DotNetPos.Windows.Forms
             bool handled = false; // Boolean, is message handled
             for (int i = 0; i < inputCount; i++)
             {
-                UnsafeMethods.TOUCHINPUT ti = inputs[i];
+                NativeMethods.TOUCHINPUT ti = inputs[i];
 
                 // Assign a handler to this message.
                 EventHandler<TouchEventArgs> handler = null;     // Touch event handler
-                if ((ti.dwFlags & UnsafeMethods.TOUCHEVENTF_DOWN) != 0)
+                if ((ti.dwFlags & NativeMethods.TOUCHEVENTF_DOWN) != 0)
                 {
                     handler = TouchDown;
                 }
-                else if ((ti.dwFlags & UnsafeMethods.TOUCHEVENTF_UP) != 0)
+                else if ((ti.dwFlags & NativeMethods.TOUCHEVENTF_UP) != 0)
                 {
                     handler = TouchUp;
                 }
-                else if ((ti.dwFlags & UnsafeMethods.TOUCHEVENTF_MOVE) != 0)
+                else if ((ti.dwFlags & NativeMethods.TOUCHEVENTF_MOVE) != 0)
                 {
                     handler = TouchMove;
                 }
@@ -90,15 +90,15 @@ namespace DotNetPos.Windows.Forms
                     te.Location = PointToClient(new Point(ti.x / 100, ti.y / 100));
 
                     // Call the virtual methods
-                    if ((ti.dwFlags & UnsafeMethods.TOUCHEVENTF_DOWN) != 0)
+                    if ((ti.dwFlags & NativeMethods.TOUCHEVENTF_DOWN) != 0)
                     {
                         OnTouchDown(te);
                     }
-                    else if ((ti.dwFlags & UnsafeMethods.TOUCHEVENTF_UP) != 0)
+                    else if ((ti.dwFlags & NativeMethods.TOUCHEVENTF_UP) != 0)
                     {
                         OnTouchUp(te);
                     }
-                    else if ((ti.dwFlags & UnsafeMethods.TOUCHEVENTF_MOVE) != 0)
+                    else if ((ti.dwFlags & NativeMethods.TOUCHEVENTF_MOVE) != 0)
                     {
                         OnTouchMove(te);
                     }
@@ -111,7 +111,7 @@ namespace DotNetPos.Windows.Forms
                 }
             }
 
-            UnsafeMethods.CloseTouchInputHandle(m.LParam);
+            NativeMethods.CloseTouchInputHandle(m.LParam);
 
             return handled;
         }
@@ -122,7 +122,7 @@ namespace DotNetPos.Windows.Forms
             bool handled;
             switch (m.Msg)
             {
-                case UnsafeMethods.WM_TOUCH:
+                case NativeMethods.WM_TOUCH:
                     handled = DecodeTouch(ref m);
                     break;
                 default:
@@ -143,7 +143,7 @@ namespace DotNetPos.Windows.Forms
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            UnsafeMethods.RegisterTouchWindow(this.Handle, 0);
+            NativeMethods.RegisterTouchWindow(this.Handle, 0);
         }
         protected virtual void OnTouchDown(TouchEventArgs e)
         {

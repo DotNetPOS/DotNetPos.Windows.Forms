@@ -21,7 +21,7 @@ namespace DotNetPos.Windows.Forms
             internal set { this._location = value; }
         }
 
-        internal GestureEventArgs(UnsafeMethods.GESTUREINFO gestureInfo)
+        internal GestureEventArgs(NativeMethods.GESTUREINFO gestureInfo)
         {
             this._location = new Point(gestureInfo.ptsLocation.x, gestureInfo.ptsLocation.y);
         }
