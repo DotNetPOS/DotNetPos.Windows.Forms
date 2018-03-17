@@ -45,8 +45,9 @@
     <Compile Include="Control.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GestureEventArgs.cs" />
+    <Compile Include="Input\TouchInputCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Input\TouchInput.cs" />
     <Compile Include="TouchEventArgs.cs" />
     <Compile Include="NativeMethods.cs" />
   </ItemGroup>
